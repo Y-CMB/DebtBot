@@ -4,18 +4,49 @@
 #### date: 26 sep 2023
 
 import requests
-from bs4 import BeautifulSoup as bs
-from keys import *
 import tweepy
+from keys import *
+from bs4 import BeautifulSoup as bs
+from pathlib import Path
+
+debt_file = Path(DEBT_PATH)
 
 def save_debt(str_to_write):
-    with open("debt_file.txt", "w") as f:
+    with open(debt_file, "w") as f:
         f.write(str_to_write)
     
     print(f"Saved {str_to_write} to file.")
 
-def read_debt(file):
-    pass
+def read_debt(new_debt):
+    old = ""
+    new = ""
+
+    # remove $ from new_debt
+    for char in new_debt:
+        if char.isnumeric():
+            new += char
+        else:
+            continue
+    
+    with open(debt_file, "r") as f:
+        content = f.read()
+
+        # remove $ from old_debt
+        for char in content:
+            if char.isnumeric():
+                old += char
+            else:
+                continue
+
+    perc_change = ((int(new) - int(old)) / int(old)) * 100 # n2-n1/n1 * 100
+    updown = ""
+
+    if 0 > perc_change:
+        updown = "decrease"
+    else:
+        updown = "increase"
+
+    return perc_change, updown
 
 def get_debt():
     page = requests.get("https://www.pgpf.org/national-debt-clock")
@@ -25,7 +56,20 @@ def get_debt():
     return debt_text
 
 def main():
-    client.create_tweet(text=f"Today's #nationaldebt: {get_debt()}")
+    # get the current debt
+    new_debt = get_debt()
+
+    # calc change
+    perc_change, updown = read_debt(new_debt)
+
+    # tweet
+    client.create_tweet(
+        text=f"""FROM THE BOT:
+        Today's #nationaldebt: {new_debt}
+        That's a {round(perc_change, 5)}% {updown} from yesterday.
+    credit: https://www.pgpf.org/national-debt-clock
+"""
+        )
 
 # Authenticate to Twitter
 auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
@@ -47,3 +91,4 @@ if __name__ == "__main__":
         main()
     except Exception as err:
         print(f"Something went wrong: {err}")
+
