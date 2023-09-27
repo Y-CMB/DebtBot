@@ -5,7 +5,7 @@
 
 import requests
 from bs4 import BeautifulSoup as bs
-import keys
+from keys import *
 import tweepy
 
 def save_debt(str_to_write):
@@ -28,16 +28,16 @@ def main():
     client.create_tweet(text=f"Today's #nationaldebt: {get_debt()}")
 
 # Authenticate to Twitter
-auth = tweepy.OAuthHandler(keys.API_KEY, keys.API_KEY_SECRET)
-auth.set_access_token(keys.ACCESS_TOKEN, keys.ACCESS_TOKEN_SECRET)
+auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
+auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
 # Create API obj
 client = tweepy.Client(
-    bearer_token=keys.BEARER_TOKEN,
-    consumer_key=keys.API_KEY,
-    consumer_secret=keys.API_KEY_SECRET,
-    access_token=keys.ACCESS_TOKEN,
-    access_token_secret=keys.ACCESS_TOKEN_SECRET
+    bearer_token=BEARER_TOKEN,
+    consumer_key=API_KEY,
+    consumer_secret=API_KEY_SECRET,
+    access_token=ACCESS_TOKEN,
+    access_token_secret=ACCESS_TOKEN_SECRET
     )
 
 # Tweet
@@ -47,5 +47,3 @@ if __name__ == "__main__":
         main()
     except Exception as err:
         print(f"Something went wrong: {err}")
-
-# added comment
