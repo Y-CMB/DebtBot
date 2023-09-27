@@ -8,6 +8,15 @@ from bs4 import BeautifulSoup as bs
 import keys
 import tweepy
 
+def save_debt(str_to_write):
+    with open("debt_file.txt", "w") as f:
+        f.write(str_to_write)
+    
+    print(f"Saved {str_to_write} to file.")
+
+def read_debt(file):
+    pass
+
 def get_debt():
     page = requests.get("https://www.pgpf.org/national-debt-clock")
     soup = bs(page.content, 'html.parser')
