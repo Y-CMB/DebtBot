@@ -70,6 +70,9 @@ def main():
     credit: https://www.pgpf.org/national-debt-clock
 """
         )
+    
+    # save new number to file
+    save_debt(new_debt)
 
 # Authenticate to Twitter
 auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
